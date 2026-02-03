@@ -51,6 +51,17 @@ void list_remove(list *l, listobj *obj)
     obj->pNext = obj->pPrevious = NULL;
 }
 
+void list_insert_before(list *l, listobj *current, listobj *obj_to_insert)
+{
+    obj_to_insert->pNext = current;
+    obj_to_insert->pPrevious = current->pPrevious;
+    if (current->pPrevious)
+        current->pPrevious->pNext = obj_to_insert;
+    else
+        l->pHead = obj_to_insert;
+    current->pPrevious = obj_to_insert;
+}
+
 listobj *list_pop_front(list *l)
 {
     if (!l->pHead)
@@ -76,7 +87,7 @@ void free_list(list *l)
     while (it)
     {
         listobj *next = it->pNext;
-        listobj_destroy(it);
+        free_listobj(it);
         it = next;
     }
     free(l);

@@ -1,10 +1,5 @@
 Should we pop the NextTask from the ReadyList on run()?
+In the initilisation of the TCB (given in the course document), is the value 0x21000000 for the SPSR a constant
 
 TODO:
-- Create a list function exception insert_before(list, obj);
-- in create_task:
-    set TCB PC to point at the taskbody
-    set up stack frame
-    set TCB’s SP to point to the correct cell in stack segment
-    create new_obj with TCB information
-    do the else statement
+- do the else statement
