@@ -2,6 +2,11 @@
 #include "linked_list.h"
 #include "tcb_functions.h"
 
+int Ticks;
+int KernelMode;
+TCB *PreviousTask, *NextTask;
+list *ReadyList, *WaitingList, *TimerList;
+
 static void update_next_task(void) {
     listobj *head = list_get_front(ReadyList);
     NextTask = head->pTask;

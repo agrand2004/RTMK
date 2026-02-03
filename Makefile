@@ -3,7 +3,7 @@
 # ! for testing purposes only !
 
 CC = gcc
-CFLAGS = -Wall -Wextra -g -I./include -I./resources
+CFLAGS = -Wall -Wextra -g -std=c99 -I./include -I./resources
 SRCDIR = src
 TESTDIR = tests
 INCLUDEDIR = include

@@ -86,10 +86,10 @@ typedef struct _list
 } list;
 
 // Global variables for the kernel
-int Ticks;
-int KernelMode;
-TCB *PreviousTask, *NextTask;
-list *ReadyList, *WaitingList, *TimerList;
+extern int Ticks;
+extern int KernelMode;
+extern TCB *PreviousTask, *NextTask;
+extern list *ReadyList, *WaitingList, *TimerList;
 
 // Function prototypes
 
