@@ -70,8 +70,8 @@ typedef struct {
 // Generic list item
 typedef struct l_obj {
          TCB            *pTask;
-         uint           nTCnt;
-         msg            *pMessage;
+         uint           nTCnt; // the timer for waiting or timer list
+         msg            *pMessage; // the message for mailbox blocking
          struct l_obj   *pPrevious;
          struct l_obj   *pNext;
 } listobj;
