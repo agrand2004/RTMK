@@ -7,9 +7,17 @@ int KernelMode;
 TCB *PreviousTask, *NextTask;
 list *ReadyList, *WaitingList, *TimerList;
 
-static void update_next_task(void) {
+void update_next_task(void) {
     listobj *head = list_get_front(ReadyList);
     NextTask = head->pTask;
+}
+
+void update_previous_task(void) {
+    PreviousTask = NextTask;
+}
+
+bool isDeadlineReached(TCB *tcb) {
+    return Ticks >= tcb->Deadline;
 }
 
 void idle_task(void)

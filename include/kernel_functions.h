@@ -99,8 +99,13 @@ exception create_task(void (*task_body)(), uint deadline);
 void terminate(void);
 void run(void);
 
+// Added functions
+void update_next_task(void);
+void update_previous_task(void);
+
 // Communication
 mailbox *create_mailbox(uint nMessages, uint nDataSize);
+exception remove_mailbox(mailbox *mBox);
 int no_messages(mailbox *mBox);
 
 exception send_wait(mailbox *mBox, void *pData);
@@ -115,6 +120,9 @@ void set_ticks(uint nTicks);
 uint ticks(void);
 uint deadline(void);
 void set_deadline(uint deadline);
+
+// Timer interrupt handler
+void Timer_Int(void);
 
 // Interrupt and context switch
 extern void isr_off(void);
