@@ -122,7 +122,7 @@ uint deadline(void);
 void set_deadline(uint deadline);
 
 // Timer interrupt handler
-void Timer_Int(void);
+void TimerInt(void);
 
 // Interrupt and context switch
 extern void isr_off(void);

@@ -73,8 +73,8 @@ exception remove_mailbox(mailbox *mBox)
 msg *get_msg_by_type(mailbox *mBox, exception type)
 {
     msg *currentMsg = mBox->pHead;
-    if (mBox->nBlockedMsg != 0)
-    {
+    // if (mBox->nBlockedMsg != 0) //? remove this ???
+    // {
         for (; currentMsg; currentMsg = currentMsg->pNext)
         {
             if (currentMsg->Status == type)
@@ -82,7 +82,7 @@ msg *get_msg_by_type(mailbox *mBox, exception type)
                 return currentMsg;
             }
         }
-    }
+    // }
     return NULL;
 }
 

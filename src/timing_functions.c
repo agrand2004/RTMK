@@ -37,10 +37,9 @@ void set_deadline(uint deadline)
     NextTask->Deadline = deadline;
     update_previous_task();
 
-    //Reschedule the current task in the ReadyList based on its new deadline
+    // Reschedule the current task in the ReadyList based on its new deadline
     listobj *current = list_pop_front(ReadyList);
     insert_deadline_in_list(ReadyList, current);
-
 
     update_next_task();
     SwitchContext();
@@ -57,8 +56,10 @@ static void check_timer_list(void)
         {
             listobj *to_move = current;
             current = current->pNext;
+            update_previous_task();
             list_remove(TimerList, to_move);
             insert_deadline_in_list(ReadyList, to_move);
+            update_next_task();
         }
         else
         {
@@ -78,10 +79,12 @@ static void check_waiting_list(void)
         {
             listobj *to_move = current;
             current = current->pNext;
+            update_previous_task();
             list_remove(WaitingList, to_move);
             insert_deadline_in_list(ReadyList, to_move);
             // TODO: Clean up mailbox entry for to_move ?? -> the thing is that we don't have access to the mailbox from here
             to_move->pMessage = NULL; // ? Is there anything else to do ?
+            update_next_task();
         }
         else
         {
@@ -90,7 +93,7 @@ static void check_waiting_list(void)
     }
 }
 
-void Timer_Int()
+void TimerInt()
 {
     Ticks++;
     check_timer_list();
