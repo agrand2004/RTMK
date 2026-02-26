@@ -25,6 +25,22 @@ static void mailbox_remove_msg(mailbox *l, msg *obj)
     obj->pNext = obj->pPrevious = NULL;
 }
 
+static void check_mailbox_full(mailbox *mBox)
+{
+    if (mBox->nMessages == mBox->nMaxMessages)
+    {
+        mailbox_remove_msg(mBox, mBox->pHead);
+        if (mBox->pHead->pBlock != NULL)
+        {
+            mBox->nBlockedMsg--;
+            // * we don't need to put the waiting task back to the ready list because it will be done in the check_timer_list function when the task will be unblocked by the timeout
+        }
+        free(mBox->pHead->pData);
+        free(mBox->pHead);
+        mBox->nMessages--;
+    }
+}
+
 static void mailbox_push_back(mailbox *l, msg *obj)
 {
     obj->pNext = NULL;
@@ -125,6 +141,7 @@ exception send_wait(mailbox *mBox, void *pData)
         memcpy(currentMsg->pData, pData, mBox->nDataSize);
         currentMsg->Status = SENDER;
         currentMsg->pBlock = list_get_front(ReadyList);
+        check_mailbox_full(mBox);
         mailbox_push_back(mBox, currentMsg);
         mBox->nMessages++;
         mBox->nBlockedMsg++;
@@ -199,6 +216,7 @@ exception receive_wait(mailbox *mBox, void *pData)
         }
         currentMsg->Status = RECEIVER;
         currentMsg->pBlock = list_get_front(ReadyList);
+        check_mailbox_full(mBox);
         mailbox_push_back(mBox, currentMsg);
         mBox->nMessages++;
         mBox->nBlockedMsg++;
@@ -264,20 +282,7 @@ exception send_no_wait(mailbox *mBox, void *pData)
         memcpy(currentMsg->pData, pData, mBox->nDataSize);
         currentMsg->Status = SENDER;
         currentMsg->pBlock = NULL;
-        // ? do we have to do the same thing in the other functions when adding to the mailbox ???
-        // Yes we need to
-        if (mBox->nMessages == mBox->nMaxMessages)
-        {
-            mailbox_remove_msg(mBox, mBox->pHead);
-            if (mBox->pHead->pBlock != NULL)
-            {
-                mBox->nBlockedMsg--;
-                // * we don't need to put the waiting task back to the ready list because it will be done in the check_timer_list function when the task will be unblocked by the timeout
-            }
-            free(mBox->pHead->pData);
-            free(mBox->pHead);
-            mBox->nMessages--;
-        }
+        check_mailbox_full(mBox);
         mailbox_push_back(mBox, currentMsg);
         mBox->nMessages++;
     }

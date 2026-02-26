@@ -6,6 +6,7 @@ exception wait(uint nTicks)
     isr_off();
     update_previous_task();
     listobj *running_task = list_pop_front(ReadyList);
+    running_task->nTCnt = nTicks;
     list_push_back(TimerList, running_task);
     update_next_task();
     SwitchContext();
