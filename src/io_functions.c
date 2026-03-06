@@ -1,6 +1,14 @@
 #include "io_functions.h"
 #include "kernel_functions.h"
 
+#define LED_PIN_1 1
+#define LED_PIN_2 2
+#define LED_PIN_3 3
+#define LED_PIN_4 4
+#define BUTTON_1_PIN 14
+#define BUTTON_2_PIN 0
+
+
 static const int task_1_deadline = 1000;
 static const int task_2_deadline = 1000;
 static const int task_3_deadline = 1000;
@@ -8,8 +16,14 @@ static const int task_4_deadline = 1000;
 
 void setup()
 {
-    // Init all the leds
+    // Init the leds
+    initLed(AT91C_ID_PIOC, LED_PIN_1); // LED1 on PC1
+    initLed(AT91C_ID_PIOC, LED_PIN_2); // LED2 on PC2
+    initLed(AT91C_ID_PIOC, LED_PIN_3); // LED3 on PC3
+    initLed(AT91C_ID_PIOC, LED_PIN_4); // LED4 on PC4
     // Init the buttons
+    initButton(AT91C_ID_PIOA, BUTTON_1_PIN);
+    initButton(AT91C_ID_PIOD, BUTTON_2_PIN);
 }
 
 void turn_on_led(int index)
