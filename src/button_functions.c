@@ -35,25 +35,34 @@ void initButtonInterrupt(int portNumber, int pinNumber)
         NVIC_EnableIRQ(portNumber); // Enable PIOA interrupt in NVIC
     } else if (portNumber == AT91C_ID_PIOD) {
         AT91C_BASE_PIOD->PIO_IFER = (1 << pinNumber); // Enable input filter
-
         // Enable interrupt for this pin
         // Interrupt will trigger on any change (press or release)
         AT91C_BASE_PIOD->PIO_IER = (1 << pinNumber); // Enable interrupt on PD1
 
         // Enable PIOD interrupt in NVIC (Nested Vectored Interrupt Controller)
-        NVIC_EnableIRQ(portNumber); // Enable PIOD interrupt in NVIC
+        NVIC_EnableIRQ(portNumber); // Enable interrupt in NVIC on the correct port
     }
 }
 
-void readButton(unsigned int *buttonState, int pinNumber)
+void readButton(unsigned int *buttonState,int portNumber, int pinNumber)
 {
-    // Read the state of PD1
-    if (AT91C_BASE_PIOD->PIO_PDSR & (1 << pinNumber))
-    {
-        *buttonState = 0; // Button not pressed
+    // Read the state of the button
+    if (portNumber == AT91C_ID_PIOA) {
+        if (AT91C_BASE_PIOA->PIO_PDSR & (1 << pinNumber)) {
+            *buttonState = 0; // Button not pressed
+        } else {
+            *buttonState = 1; // Button pressed
+        }
+    } else if (portNumber == AT91C_ID_PIOD) {
+        if (AT91C_BASE_PIOD->PIO_PDSR & (1 << pinNumber)) {
+            *buttonState = 0; // Button not pressed
+        } else {
+            *buttonState = 1; // Button pressed
+        }
     }
-    else
-    {
-        *buttonState = 1; // Button pressed
-    }
+}
+
+void PIOA_Handler(void)
+{
+    ButtonHandler(AT91C_ID_PIOA);
 }

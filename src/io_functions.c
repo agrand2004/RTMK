@@ -1,19 +1,6 @@
 #include "io_functions.h"
 #include "kernel_functions.h"
 
-#define LED_PIN_1 1
-#define LED_PIN_2 2
-#define LED_PIN_3 3
-#define LED_PIN_4 4
-#define BUTTON_1_PIN 14
-#define BUTTON_2_PIN 0
-
-
-static const int task_1_deadline = 1000;
-static const int task_2_deadline = 1000;
-static const int task_3_deadline = 1000;
-static const int task_4_deadline = 1000;
-
 void setup()
 {
     // Init the leds
@@ -60,50 +47,20 @@ void compute_primes()
     }
 }
 
-void Task_1() {
-    while(1) {
-        turn_on_led(1);
-        compute_primes();
-        for (int i = 0; i < 3; i++) {
-            flash_led(1);
-        }
-        exception r = wait(8000);
-        set_deadline(task_1_deadline + ticks());
-    }
-}
+void ButtonHandler(int port)
+{
+    unsigned int status;
+    int buttonState;
 
-void Task_2() {
-    while(1) {
-        turn_on_led(2);
-        compute_primes();
-        for (int i = 0; i < 3; i++) {
-            flash_led(2);
-        }
-        exception r = wait(8000);
-        set_deadline(task_2_deadline + ticks());
+    if (port == AT91C_ID_PIOA) {
+        status = AT91C_BASE_PIOA->PIO_ISR;
+    } else {
+        status = AT91C_BASE_PIOD->PIO_ISR;
     }
-}
-
-void Task_3() {
-    while(1) {
-        turn_on_led(3);
-        compute_primes();
-        for (int i = 0; i < 3; i++) {
-            flash_led(3);
+    if (status & (1 << BUTTON_1_PIN)) {
+        readButton(&buttonState, AT91C_ID_PIOA, BUTTON_1_PIN);
+        if (buttonState) {
+            send_no_wait(input_events, &buttonState);
         }
-        exception r = wait(8000);
-        set_deadline(task_3_deadline + ticks());
-    }
-}
-
-void Task_4() {
-    int buttonState = 0;
-    while (1) {
-        readButton(&buttonState, BUTTON_PIN);
-        if (buttonState == 1) {
-            flash_led(4);
-        }
-        exception r = wait(10);
-        set_deadline(task_4_deadline + ticks());
     }
 }
