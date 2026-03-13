@@ -25,18 +25,24 @@ static void mailbox_remove_msg(mailbox *l, msg *obj)
     obj->pNext = obj->pPrevious = NULL;
 }
 
+bool is_mailbox_empty(mailbox *mBox)
+{
+    return mBox->nMessages == 0;
+}
+
 static void check_mailbox_full(mailbox *mBox)
 {
     if (mBox->nMessages == mBox->nMaxMessages)
     {
+        msg *currentMsg = mBox->pHead;
         mailbox_remove_msg(mBox, mBox->pHead);
-        if (mBox->pHead->pBlock != NULL)
+        if (currentMsg->pBlock != NULL)
         {
             mBox->nBlockedMsg--;
             // * we don't need to put the waiting task back to the ready list because it will be done in the check_timer_list function when the task will be unblocked by the timeout
         }
-        free(mBox->pHead->pData);
-        free(mBox->pHead);
+        free(currentMsg->pData);
+        free(currentMsg);
         mBox->nMessages--;
     }
 }
@@ -197,6 +203,8 @@ exception receive_wait(mailbox *mBox, void *pData)
         {
             free(currentMsg->pData);
             free(currentMsg);
+            isr_on();
+            return OK;
         }
     }
     else
@@ -285,6 +293,7 @@ exception send_no_wait(mailbox *mBox, void *pData)
         check_mailbox_full(mBox);
         mailbox_push_back(mBox, currentMsg);
         mBox->nMessages++;
+        isr_on();
     }
     return OK;
 }

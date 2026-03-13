@@ -30,6 +30,9 @@ void flash_led(int index)
         for (int j = 0; j < 100; j++)
             ;
     turn_off_led(index);
+    for (int i = 0; i < 8000; i++)
+        for (int j = 0; j < 100; j++)
+            ;
 }
 
 void compute_primes()
@@ -51,6 +54,7 @@ void ButtonHandler(int port)
 {
     unsigned int status;
     int buttonState;
+    int test = 0;
 
     if (port == AT91C_ID_PIOA) {
         status = AT91C_BASE_PIOA->PIO_ISR;
@@ -60,7 +64,7 @@ void ButtonHandler(int port)
     if (status & (1 << BUTTON_1_PIN)) {
         readButton(&buttonState, AT91C_ID_PIOA, BUTTON_1_PIN);
         if (buttonState) {
-            send_no_wait(input_events, &buttonState);
+            send_no_wait(input_events, &test);
         }
     }
 }

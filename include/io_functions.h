@@ -2,6 +2,7 @@
 
 #include "led_functions.h"
 #include "button_functions.h"
+#include "kernel_functions.h"
 
 #define LED_PIN_1 1
 #define LED_PIN_2 2

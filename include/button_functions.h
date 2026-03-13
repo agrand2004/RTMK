@@ -4,3 +4,5 @@
 
 void initButton(int portNumber, int pinNumber);
 void readButton(unsigned int *buttonState, int portNumber, int pinNumber);
+void PIOA_Handler(void);
+void PIOD_Handler(void);
