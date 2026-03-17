@@ -102,6 +102,7 @@ void run(void);
 // Added functions
 void update_next_task(void);
 void update_previous_task(void);
+bool isDeadlineReached(TCB *tcb);
 
 // Communication
 mailbox *create_mailbox(uint nMessages, uint nDataSize);
